@@ -1,0 +1,66 @@
+# homogeneous_stationary.py
+import numpy as np
+import pandas as pd
+import scipy.special as special
+from numba import jit
+import matplotlib.pyplot as plt
+import matplotlib
+matplotlib.rcParams['text.usetex'] = True
+from matplotlib.transforms import (
+    Bbox, TransformedBbox, blended_transform_factory)
+import random
+# import scipy.special as special
+
+# Import math Library
+import math 
+
+from sympy import *
+
+import csv
+
+from sklearn.linear_model import LinearRegression
+
+
+def find_nearest(array, value):
+    array = np.asarray(array)
+    idx = (np.abs(array - value)).argmin()
+    return array[idx]
+
+
+
+rox0_stat= pd.read_csv("rox_stat.csv",header=None,sep='\s+',names=["tau","rhox"])
+
+
+print(transpose(rox0_stat))
+
+
+
+
+
+    
+fig1=plt.figure()
+
+
+plt.plot(rox0_stat['tau'],rox0_stat['rhox'],color= "C0",label=r"$\lambda = 1$")
+
+
+
+
+plt.xlabel(r'$\tau$')
+
+plt.ylabel(r'$\rho_{X0}/\rho_0$')
+
+plt.legend()
+
+plt.xticks(fontsize=30)
+plt.yticks(fontsize=30)
+
+
+
+
+
+
+
+plt.tight_layout()
+
+plt.show()

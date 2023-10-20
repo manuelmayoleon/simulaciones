@@ -31,7 +31,7 @@ Tm = 1
 ##############
 
 # Tiempo hasta el que se simula
-tsim = 100
+tsim = 10
 # Intervalo de tiempo de la simulacion
 t = np.arange(0, tsim, dt)
 # Cada cuantos pasos dt almacenamos los datos
@@ -242,9 +242,30 @@ plt.plot(x_bin,rho_mean, marker="o",linestyle="")
 # plt.plot(x_bin,rho_inst, marker="+",linestyle="")
 #! PARA GUARDAR DOCS EN TXT POR COLUMNAS
 
-with open(r'C:\Users\Manuel\Documents\U_chile\chemotaxis\simulaciones\density_lambda'+str(alpha)+'.txt','a',newline='\n') as f:
+with open(os.getcwd()+'\density_lambda'+str(alpha)+'_.dat','a',newline='\n') as f:
         writer = csv.writer(f, delimiter='\t')
         writer.writerows(zip([x_bin],[rho_mean]))
+with open(os.getcwd()+'\densityx_lambda'+str(alpha)+'_.dat','a',newline='\n') as f:
+        writer = csv.writer(f, delimiter='\t')
+        writer.writerows(zip([x_bin],[rhox_mean]))
+with open(os.getcwd()+'\dipolarmom1_lambda'+str(alpha)+'_.dat','a',newline='\n') as f:
+        writer = csv.writer(f, delimiter='\t')
+        writer.writerows(zip([x_bin],[Q1_mean]))
+with open(os.getcwd()+'\dipolarmom2_lambda'+str(alpha)+'_.dat','a',newline='\n') as f:
+        writer = csv.writer(f, delimiter='\t')
+        writer.writerows(zip([x_bin],[Q2_mean]))
+with open(os.getcwd()+'\currentx_lambda'+str(alpha)+'_.dat','a',newline='\n') as f:
+        writer = csv.writer(f, delimiter='\t')
+        writer.writerows(zip([x_bin],[Jx_mean]))
+with open(os.getcwd()+'\currenty_lambda'+str(alpha)+'_.dat','a',newline='\n') as f:
+        writer = csv.writer(f, delimiter='\t')
+        writer.writerows(zip([x_bin],[Jy_mean]))
+with open(os.getcwd()+'\currentXx_lambda'+str(alpha)+'_.dat','a',newline='\n') as f:
+        writer = csv.writer(f, delimiter='\t')
+        writer.writerows(zip([x_bin],[JXx_mean]))
+with open(os.getcwd()+'\currentXy_lambda'+str(alpha)+'_.dat','a',newline='\n') as f:
+        writer = csv.writer(f, delimiter='\t')
+        writer.writerows(zip([x_bin],[JXy_mean]))
 # plt.plot(x_bin, food_profile)
 # plt.figtext(.75,.82,'$c_1$ = {:n}'.format(c1)) # Sacar comentario si se quiere gráfico con leyenda
 # plt.figtext(.75,.77,r'$T_m=$ {:n}'.format(Tm))

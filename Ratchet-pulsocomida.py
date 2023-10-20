@@ -30,6 +30,8 @@ import matplotlib_inline
 
 import csv 
 
+import os 
+
 def ligando_escalar(x):
 
 #    return math.tanh(4*math.sin(2*math.pi*x/L))
@@ -75,7 +77,7 @@ N = 1000 # 2000
 # Parametros del sistema
 
 v0 = V = B = D =  1
-alpha = 0.5
+alpha = 0.2
 
 
 ############## Valores gradiente y tiempo de memoria
@@ -92,7 +94,7 @@ Tm = 1
 
 # Tiempo hasta el que se simula
 
-tsim = 1000
+tsim = 10000
 
 # Intervalo de tiempo de la simulacion
 
@@ -101,7 +103,6 @@ t = np.arange(0, tsim, dt)
 # Cada cuantos pasos dt almacenamos los datos
 
 cut = 1000
-
 
 
 # Largo de la caja donde simulamos
@@ -405,6 +406,8 @@ print(end-start)
 
 rho_mean = rho_acum/(k2*dx)
 
+
+
 rhox_mean = rhox_acum/(k2*dx)
 
 Q1_mean = Q1_acum/(k2*dx)
@@ -412,12 +415,15 @@ Q1_mean = Q1_acum/(k2*dx)
 Q2_mean = Q2_acum/(k2*dx)
 
 JXx_mean = JX1_acum/(k2*dx)
+ 
 
-JXy_mean = JX2_acum/(k2*dx)
+JXy_mean = JX2_acum/(k2*dx)      
 
-Jx_mean = Jx_acum/(k2*dx)
+Jx_mean = Jx_acum/(k2*dx)      
+     
 
-Jy_mean = Jy_acum/(k2*dx)
+Jy_mean = Jy_acum/(k2*dx)      
+     
 
 
 
@@ -427,11 +433,34 @@ plt.plot(xx,rho_mean, marker="o",linestyle="")
 plt.plot(xx,50+20*lorentzian_form(alpha,Tm,xx)*ligando(x_bin))
 
 # plt.plot(x_bin,rho_inst, marker="+",linestyle="")
-#! PARA GUARDAR DOCS EN dat POR COLUMNAS
 
-with open(r'C:\Users\Manuel\Documents\U_chile\chemotaxis\simulaciones\density_lamb'+str(alpha)+'.dat','a',newline='\n') as f:
+
+#! PARA GUARDAR DOCS EN .dat POR COLUMNAS
+
+with open(os.getcwd()+'/density_lambda'+str(alpha)+'_.dat','a',newline='\n') as f:
         writer = csv.writer(f, delimiter='\t')
         writer.writerows(zip(x_bin,rho_mean))
+with open(os.getcwd()+'/densityx_lambda'+str(alpha)+'_.dat','a',newline='\n') as f:
+        writer = csv.writer(f, delimiter='\t')
+        writer.writerows(zip(x_bin,rhox_mean))
+with open(os.getcwd()+'/dipolarmom1_lambda'+str(alpha)+'_.dat','a',newline='\n') as f:
+        writer = csv.writer(f, delimiter='\t')
+        writer.writerows(zip(x_bin,Q1_mean))
+with open(os.getcwd()+'/dipolarmom2_lambda'+str(alpha)+'_.dat','a',newline='\n') as f:
+        writer = csv.writer(f, delimiter='\t')
+        writer.writerows(zip(x_bin,Q2_mean))
+with open(os.getcwd()+'/currentx_lambda'+str(alpha)+'_.dat','a',newline='\n') as f:
+        writer = csv.writer(f, delimiter='\t')
+        writer.writerows(zip(x_bin,Jx_mean))
+with open(os.getcwd()+'/currenty_lambda'+str(alpha)+'_.dat','a',newline='\n') as f:
+        writer = csv.writer(f, delimiter='\t')
+        writer.writerows(zip(x_bin,Jy_mean))
+with open(os.getcwd()+'/currentXx_lambda'+str(alpha)+'_.dat','a',newline='\n') as f:
+        writer = csv.writer(f, delimiter='\t')
+        writer.writerows(zip(x_bin,JXx_mean))
+with open(os.getcwd()+'/currentXy_lambda'+str(alpha)+'_.dat','a',newline='\n') as f:
+        writer = csv.writer(f, delimiter='\t')
+        writer.writerows(zip(x_bin,JXy_mean))
 # plt.figtext(.75,.82,'$c_1$ = {:n}'.format(c1)) # Sacar comentario si se quiere gráfico con leyenda
 
 # plt.figtext(.75,.77,r'$T_m=$ {:n}'.format(Tm))
