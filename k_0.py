@@ -448,10 +448,10 @@ def calculo_k0_simulaciones(vector1,vector2,vector3,vector4,vector5,vector6):
     popt5, pcov5 = curve_fit(lorentz, xxx, np.reshape(r5_p, r5_p.size))
 
     r3_p = ro_pp(vector3[0:])
-    popt3, pcov3 = curve_fit(lorentz, xxx, np.reshape(r3_p, r103_p.size))
+    popt3, pcov3 = curve_fit(lorentz, xxx, np.reshape(r3_p, r3_p.size))
 
     r2_p = ro_pp(vector4[0:])
-    popt2, pcov2 = curve_fit(lorentz, xxx, np.reshape(r2_p, r102_p.size))
+    popt2, pcov2 = curve_fit(lorentz, xxx, np.reshape(r2_p, r2_p.size))
 
     r10_p = ro_pp(vector5[0:])
     popt10, pcov10 = curve_fit(lorentz, xxx, np.reshape(r10_p, r10_p.size))
