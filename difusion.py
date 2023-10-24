@@ -28,7 +28,7 @@ from sklearn.metrics import mean_absolute_error
 import functions as fun
 
 lamb=1.62
-tau = 4.2
+tau = 5
 
 
 def eigen1(lamb,tau,k):
@@ -55,7 +55,7 @@ def eigen2_taugg(lamb,tau,k):
 
 
 # k = np.linspace(0,1,100)
-k = np.linspace(0,k_critico(lamb,tau)+0.5,100)
+k = np.linspace(0,k_critico(lamb,tau)+0.1,100)
 kk = np.linspace(k_critico(lamb,tau),k_critico(lamb,tau)+0.2,100)
 
 print(fun.D_2(lamb,tau))
@@ -115,7 +115,7 @@ plt.loglog(k, eigen2(lamb,tau,k),color="b")
 # plt.loglog(k, aprox_lambda2(lamb,tau,k),color="b",linestyle = "dashdot")
 # plt.loglog(kk, eigen2_taugg(lamb,tau,kk),color="b",linestyle="--")
 
-plt.loglog(k,k**2*2,color="g",linestyle=":")
+plt.loglog(k,k**2*1.5,color="g",linestyle=":")
 
 
 plt.axvline( k_critico(lamb,tau),color="r",linestyle="--")
@@ -128,12 +128,15 @@ plt.ylabel(r'$\mathrm{log}v_i$',fontsize=30)
 
 # plt.legend(fontsize=30,loc="best")
 
-plt.xticks(fontsize=40)
-plt.yticks(fontsize=40)
+
+
+plt.xlim(1e-1,5.0)
+
+plt.xticks(fontsize=30)
+plt.yticks(fontsize=30)
 
 
 
-# plt.xlim(0.0,1.0)
 # plt.ylim(0,k0(2.0,Tm))
 
 
