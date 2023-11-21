@@ -52,9 +52,9 @@ for ii in csv_files:
         # print('Location:', ii)
         file_name = ii.split("/")[-1]
         # print('File Name:', file_name )
-        # name = file_name.split(".")[0]
+        name = file_name.split(".dat")[0]
         name=file_name
-        # print('Name:', name)
+        print('Name:', name)
         names.append(name)
           
         # print the content
