@@ -74,10 +74,10 @@ tau=np.linspace(0,100,len(roxx))
 print(tau)
     
 fig1=plt.figure(figsize=(14,8))
-plt.plot(tau,np.array(roxx3),color= "C2",linestyle = "dashdot",label=r"$l_0 = 3$")
+plt.plot(tau,np.array(roxx3),color= "k",linestyle = "dashdot",label=r"$l_0 = 3$",linewidth=2.0)
 # plt.plot(tau,np.array(roxx15),color= "C3",linestyle = "dotted",label=r"$l_0 = 1.5$")
-plt.plot(tau,np.array(roxx),color= "C0",linestyle = "-" ,label=r"$l_0 = 1$")
-plt.plot(tau,np.array(roxx05),color= "C1",linestyle = "--",label=r"$l_0 = 0.5$")
+plt.plot(tau,np.array(roxx),color= "b",linestyle = "-" ,label=r"$l_0 = 1$",linewidth=2.0)
+plt.plot(tau,np.array(roxx05),color= "r",linestyle = "--",label=r"$l_0 = 0.5$",linewidth=2.0)
 # plt.plot(tau,np.array(roxx02),color= "C2",linestyle = "dashdot",label=r"$l_0 = 0.2$")
 # plt.plot(tau,np.array(roxx15),color= "C3",linestyle = "dotted",label=r"$l_0 = 1.5$")
 
@@ -108,10 +108,10 @@ plt.savefig("stationary_rhox0_homogeneous.pdf",dpi=1200)
 fig2=plt.figure(figsize=(14,8))
 
 
-plt.plot(tau,np.array(j3),color= "C2",linestyle = "dashdot",label=r"$l_0 = 3$")
+plt.plot(tau,np.array(j3),color= "k",linestyle = "dashdot",label=r"$l_0 = 3$",linewidth=2.0)
 # plt.plot(tau,np.array(j15),color= "C3",linestyle = "dotted",label=r"$l_0 = 1.5$")
-plt.plot(tau,np.array(j1),color= "C0",linestyle = "-" ,label=r"$l_0 = 1$")
-plt.plot(tau,np.array(j05),color= "C1",linestyle = "--",label=r"$l_0 = 0.5$")
+plt.plot(tau,np.array(j1),color= "b",linestyle = "-" ,label=r"$l_0 = 1$",linewidth=2.0)
+plt.plot(tau,np.array(j05),color= "r",linestyle = "--",label=r"$l_0 = 0.5$",linewidth=2.0)
 # plt.plot(tau,np.array(j02),color= "C2",linestyle = "dashdot",label=r"$l_0 = 0.2$")
 # plt.plot(tau,np.array(roxx15),color= "C3",linestyle = "dotted",label=r"$l_0 = 1.5$")
 

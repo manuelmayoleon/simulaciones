@@ -31,7 +31,7 @@ from sklearn.metrics import mean_absolute_error
 import functions as fun
 
 lamb=1.62
-tau = 5
+tau = 4.2
 
 
 def eigen1(lamb,tau,k):
@@ -55,8 +55,7 @@ def eigen1_taugg(lamb,tau,k):
 def eigen2_taugg(lamb,tau,k):
     return 0.5 * (fun.D_2(lamb,tau) + fun.DDx_2(lamb,tau)  + np.sqrt(fun.D_2(lamb,tau)**2 + 4 * fun.Dx_2(lamb,tau) **2 - 2  * fun.D_2(lamb,tau) *  fun.DDx_2(lamb,tau)  + fun.DDx_2(lamb,tau) **2))  * k**2
 
-
-
+print(k_critico(lamb,tau))
 # k = np.linspace(0,1,100)
 k = np.linspace(0,k_critico(lamb,tau)+10,1000)
 kk = np.linspace(k_critico(lamb,tau),k_critico(lamb,tau)+0.2,100)
@@ -68,20 +67,20 @@ print(fun.DDx_2(lamb,tau))
 fig3,ax1=plt.subplots(figsize=(14,8))
 
 
-ax1.plot(k, eigen1(lamb,tau,k),color="k")
-ax1.plot(k, k**2*fun.D_2(lamb,tau),color="k",linestyle=":")
+ax1.plot(k, eigen1(lamb,tau,k),color="k",linewidth=2.0)
+ax1.plot(k, k**2*fun.D_2(lamb,tau),color="k",linestyle=":",linewidth=2.0)
 # plt.plot(k/k_critico(lamb,tau), fun.D_2(lamb,tau)*  k**2,color="k",linestyle = "dotted")
 # plt.plot(kk, eigen1_taugg(lamb,tau,kk),color="k",linestyle="--")
 
 ax1.plot(k, eigen2(lamb,tau,k),color="b",linestyle = "--")
-ax1.plot(k,((1/tau)*np.ones(len(k)) + k**2*fun.DDx_2(lamb,tau)),color="b",linestyle=":")
+ax1.plot(k,((1/tau)*np.ones(len(k)) + k**2*fun.DDx_2(lamb,tau)),color="b",linestyle=":",linewidth=2.0)
 # plt.plot(k/k_critico(lamb,tau), (1/tau)*np.ones(len(k)),color="b",linestyle = "dotted")
 # plt.plot(k/k_critico(lamb,tau), aprox_lambda2(lamb,tau,k/k_critico(lamb,tau)),color="b",linestyle = "dashdot")
 # plt.plot(kk, eigen2_taugg(lamb,tau,kk),color="b",linestyle="--")
 
 
 
-ax1.axvline( k_critico(lamb,tau),color="r",linestyle=":")
+ax1.axvline( k_critico(lamb,tau),color="r",linestyle=":",linewidth=2.0)
 
 ax1.text( k_critico(lamb,tau), -17,  "$k^*$", fontsize=30,color="r")
 
@@ -121,19 +120,19 @@ ax2.set_axes_locator(ip)
 
 # ! v_1
 
-ax2.plot(k, eigen1(lamb,tau,k),color="k")
-ax2.plot(k, fun.D_2(lamb,tau)*  k**2,color="k",linestyle = "dotted")
+ax2.plot(k, eigen1(lamb,tau,k),color="k",linewidth=2.0)
+ax2.plot(k, fun.D_2(lamb,tau)*  k**2,color="k",linestyle = "dotted",linewidth=2.0)
 
 
 # ! v_2
 
-ax2.plot(k, eigen2(lamb,tau,k),color="b",linestyle="--")
+ax2.plot(k, eigen2(lamb,tau,k),color="b",linestyle="--",linewidth=2.0)
 
-ax2.plot(k, (1/tau)*np.ones(len(k)),color="b",linestyle = "dotted")
+ax2.plot(k, (1/tau)*np.ones(len(k)),color="b",linestyle = "dotted",linewidth=2.0)
 
 
 
-ax2.axvline( k_critico(lamb,tau),color="r",linestyle=":")
+ax2.axvline( k_critico(lamb,tau),color="r",linestyle=":",linewidth=2.0)
 
 
 
@@ -166,19 +165,19 @@ fig3=plt.figure(figsize=(14,8))
 # k = np.linspace(0,1,100)
 k = np.linspace(0,k_critico(lamb,tau)+10,1000)
 # kk = np.linspace(k_critico(lamb,tau),k_critico(lamb,tau)+0.2,100)
-plt.loglog(k, eigen1(lamb,tau,k),color="k")
-# plt.loglog(k, fun.D_2(lamb,tau)*  k**2,color="k",linestyle = "dotted")
-# plt.loglog(kk, eigen1_taugg(lamb,tau,kk),color="k",linestyle="--")
+plt.loglog(k, eigen1(lamb,tau,k),color="k",linewidth=2.0)
+plt.loglog(k,eigen2_taugg(lamb,tau,k),color="C2",linestyle = "dotted")
+plt.loglog(k,eigen1_taugg(lamb,tau,k),color="C1",linestyle = "dotted")
 
-plt.loglog(k, eigen2(lamb,tau,k),color="b",linestyle="--")
+plt.loglog(k, eigen2(lamb,tau,k),color="b",linestyle="--",linewidth=2.0)
 # plt.loglog(k, (1/tau)*np.ones(len(k)),color="b",linestyle = "dotted")
 # plt.loglog(k, aprox_lambda2(lamb,tau,k),color="b",linestyle = "dashdot")
 # plt.loglog(kk, eigen2_taugg(lamb,tau,kk),color="b",linestyle="--")
 
-plt.loglog(k,(k)**2*1.8,color="g",linestyle="dashdot")
+plt.loglog(k,(k)**2*1.8,color="g",linestyle="dashdot",linewidth=2.0)
 
 
-plt.axvline( k_critico(lamb,tau),color="r",linestyle=":")
+plt.axvline( k_critico(lamb,tau),color="r",linestyle=":",linewidth=2.0)
 
 plt.text(k_critico(lamb,tau),3e-5,  "$k^*$", fontsize=30,color="r")
 

@@ -9,6 +9,8 @@ matplotlib.rcParams['text.usetex'] = True
 from matplotlib.transforms import (
     Bbox, TransformedBbox, blended_transform_factory)
 import random
+from mpl_toolkits.axes_grid.inset_locator import (inset_axes, InsetPosition,
+                                                  mark_inset)
 # import scipy.special as special
 
 # Import math Library
@@ -20,6 +22,7 @@ import csv
 import os 
 import glob
 
+from matplotlib.ticker import FormatStrFormatter
 
 from scipy.optimize import curve_fit
 
@@ -360,12 +363,14 @@ def lorentzian_form(lamb,tau,x,L):
     psi0=lamb*np.exp(lamb**2/2)/(1+np.exp(lamb**2/2)*tau*(1+lamb**2))
     k0 = np.sqrt((1+np.exp(lamb**2/2)*tau*(1+lamb**2))/tau**2)
     if(x>L/4 or x<(-L/4)):
-        return  psi0*(1 - np.exp(- k0* abs(x-np.sign(x)*L*0.5))) 
+        return  psi0*(1 - np.exp(- k0* abs(x-np.sign(x)*L*0.5))) /k0
     else:
-        return  psi0*(1 - np.exp(- k0* abs(x))) 
+        return  psi0*(1 - np.exp(- k0* abs(x))) /k0
 
 def mu0_2(lamb,tau): 
     return (lamb * (2 + np.exp(lamb**2/2) * (1 + lamb**2) *  tau))/(2 + np.exp(lamb**2/2) *  (3 + 2  * lamb**2) *  tau + np.exp(lamb**2) * tau**2)
+def mup0_2(lamb,tau): 
+    return ( (2 + np.exp(lamb**2/2) * (1 + 2*lamb**2) *  tau))/(2 + np.exp(lamb**2/2) *  (3 + 2  * lamb**2) *  tau + np.exp(lamb**2) * tau**2)
 def D_2(lamb,tau):
     return   (np.exp(-(lamb**2/2)) *  (4 + np.exp(lamb**2/2) *  (6 + 8 *  lamb**2 + lamb**4) *  tau + np.exp(lamb**2) *  (2 + 2 * lamb**2 + lamb**4) *  tau**2))/(2  * (2 + np.exp(lamb**2/2) *  (3 + 2 * lamb**2) * tau + np.exp(lamb**2) *  tau**2))
 def Dx_2(lamb,tau):
@@ -386,7 +391,28 @@ def lorentzian_form_order_2(lamb,tau,x):
    
    return  psi0(lamb,tau)*(1 - np.exp(- k0_2(lamb,tau)* abs(x)))/ k0_2(lamb,tau)
 
+# !! Definicion de la función respuesta de rho_X 
 
+# def A(lamb,tau):
+    
+#    return 0.5*Dx_2(lamb,tau)*np.sqrt(np.pi*0.5)/(D_2(lamb,tau)*DDx_2(lamb,tau)-2*Dx_2(lamb,tau))
+
+# def C(lamb,tau):
+    
+#    return mu0_2(lamb,tau)*DDx_2(lamb,tau)**2 + mup0_2(lamb,tau)*(DDx_2(lamb,tau)**2-2*Dx_2(lamb,tau)**2)
+
+
+def resp_rhox_nop(lamb,tau,x,L):
+    return - np.exp(-abs(x)*k0_2(lamb,tau))*np.sqrt(np.pi*0.5)*mu0_2(lamb,tau)/Dx_2(lamb,tau)
+
+
+def resp_rhox(lamb,tau,x,L):
+    
+
+    if(x>L/4 or x<(-L/4)):
+        return  - np.exp(- k0_2(lamb,tau)* abs(x-np.sign(x)*L*0.5)) *np.sqrt(np.pi*0.5)*mu0_2(lamb,tau)/Dx_2(lamb,tau)
+    else:
+        return  - np.exp(- k0_2(lamb,tau)* abs(x)) *np.sqrt(np.pi*0.5)*mu0_2(lamb,tau)/Dx_2(lamb,tau)
 
 
 
@@ -397,8 +423,7 @@ def lorentzian_form_articulo(lamb,tau,x):
 
 ligando = np.vectorize(ligando_escalar)
 lorentz_fr = np.vectorize(lorentzian_form)
-
-
+lorentz_rhox = np.vectorize(resp_rhox)
 def lorentz(x,a,b):
    return  a*np.sign(x)*(1 - np.exp(- b* abs(x)))
 
@@ -969,15 +994,18 @@ print(k0_2(lamda,Tm))
 
 
 
-# !! graficas de rho 
+# !!!!! graficas de rho  y rho_X
 
 
-L=20
+L= 20  # ? si tau =1.0
+
+
+#L= 10  # ? si tau =0.1
 Tm = 1.0
 lamda= 1.0
 #* Arreglo espacial de la configuracion 
 
-dx = L/300
+dx = L/10000
 
 xfield = np.arange(0,L,dx)
 
@@ -992,8 +1020,8 @@ fig1=plt.figure(figsize=(14,8))
 # plt.plot(tau01_lamda01[4][0],-tau01_lamda01[4][2],color= "C0",label=r"$\lambda = 0.1,\tau=0.1,l_0=0.1$")
 # plt.plot(tau01_lamda01[4][0],tau01_lamda01[4][2]/tau01_lamda01[4][3],color= "C0",label=r"$\lambda = 0.1,\tau=0.1,l_0=0.1$")
 # plt.plot(tau1_lamda01[4][0],tau1_lamda01[4][1],color= "C1")
-plt.plot(tau1_lamda10[3][0],tau1_lamda10[3][1],color= "C1")
-plt.plot(xx,0.53*lorentz_fr(lamda,Tm,xx,L)*ligando(x_bin,0.4,L),color="C0")
+plt.plot(tau1_lamda10[3][0],tau1_lamda10[3][2]/7.8,color= "b",linewidth=2.0)
+plt.plot(xx,lorentz_rhox(lamda,Tm,xx,L)*ligando(x_bin,0.4,L),color="r",linestyle="--",linewidth=2.5)
 
 # plt.plot(tau01_lamda01[4][0][int(len(tau01_lamda01)/2):],exponential(tau01_lamda01[4][0][int(len(tau01_lamda01)/2):],tau01_lamda01[4][0][int(len(tau01_lamda01)/2):],media_k0_tau01_lamda01),color="C1")
 # plt.plot(tau01_lamda01[4][0][int(len(tau01_lamda01)/2):],exponential(tau01_lamda01[4][0][int(len(tau01_lamda01)/2):],popt4[0],k0(lamda,Tm)),color="C3")
@@ -1001,9 +1029,9 @@ plt.plot(xx,0.53*lorentz_fr(lamda,Tm,xx,L)*ligando(x_bin,0.4,L),color="C0")
 
 plt.xlabel(r'$x$',fontsize=40)
 
-plt.ylabel(r'$\Delta\rho/\rho_0$',fontsize=40)
-
-plt.legend(fontsize=30)
+# plt.ylabel(r'$\Delta\rho/\rho_0$',fontsize=40)
+plt.ylabel(r'$\rho_X/\rho_0$',fontsize=40)
+#plt.legend(fontsize=30)
 
 plt.xticks(fontsize=25)
 plt.yticks(fontsize=25)
@@ -1013,7 +1041,8 @@ plt.yticks(fontsize=25)
 plt.tight_layout()
 
 
-plt.savefig('response_to_step_function_tau'+str(Tm)+'lambda_'+str(lamda)+'.pdf',dpi=1200)
+#plt.savefig('response_to_step_function_tau'+str(Tm)+'lambda_'+str(lamda)+'.pdf',dpi=1200)
+plt.savefig('rhox_response_to_step_function_tau'+str(Tm)+'lambda_'+str(lamda)+'.pdf',dpi=1200)
 
 # ! Gráficas de k0 para distintos tau
 
@@ -1035,20 +1064,20 @@ lmbs = np.linspace(0.0,2.0,100)
 
 fig3=plt.figure(figsize=(14,8))
 
-plt.plot(lmbs,k0_2(lmbs,0.1)/((np.sqrt(1+0.1)/0.1)*np.ones(len(lmbs))),color="k")
+plt.plot(lmbs,k0_2(lmbs,0.1)/((np.sqrt(1+0.1)/0.1)*np.ones(len(lmbs))),color="k",linewidth=2.0)
 
 plt.errorbar(lmb_array,k0_medias_2/((np.sqrt(1+0.1)/0.1)*np.ones(len(lmb_array))), yerr=k0_error_medias_2/((np.sqrt(1+0.1)/0.1)*np.ones(len(lmb_array))),mfc="none",capsize=10,ms=12, color='r',marker="s",linestyle="",label= r" $\tau_{sim} =  0.1$ "    ) 
 
 
 
-plt.xlabel(r'$\lambda$',fontsize=30)
+plt.xlabel(r'$\lambda$',fontsize=40)
 
-plt.ylabel(r'$k_0$',fontsize=30)
+plt.ylabel(r'$k_0$',fontsize=40)
 
-plt.legend(fontsize=30,loc="best")
+#plt.legend(fontsize=30,loc="best")
 
-plt.xticks(fontsize=40)
-plt.yticks(fontsize=40)
+plt.xticks(fontsize=25)
+plt.yticks(fontsize=25)
 
 
 
@@ -1057,26 +1086,27 @@ plt.xlim(0.0,2.1)
 
 plt.tight_layout()
 
+plt.savefig('k0_vs_lambda_01.pdf',dpi=1200)
 
 # ??? TAU = 10.0 
 
 fig3=plt.figure(figsize=(14,8))
 
-plt.plot(lmbs,k0(lmbs,10.0)/((np.sqrt(1+10)/10)*np.ones(len(lmbs))),color="k")
+plt.plot(lmbs,k0(lmbs,10.0)/((np.sqrt(1+10)/10)*np.ones(len(lmbs))),color="k",linewidth=2.0)
 
 plt.errorbar(lmb_array,k0_medias_10/((np.sqrt(1+10)/10)*np.ones(len(lmb_array))), yerr=k0_error_medias_10/((np.sqrt(1+10)/10)*np.ones(len(lmb_array))),mfc="none",capsize=10,ms=12, color='r',marker="s",linestyle="",label= r" $\tau_{sim} =  10.0$ "    ) 
 # plt.plot(lmbs,(np.sqrt(1+10)/10)*np.ones(len(lmbs)),color="k",linestyle ="--")
 
 
 
-plt.xlabel(r'$\lambda$',fontsize=30)
+plt.xlabel(r'$\lambda$',fontsize=40)
 
-plt.ylabel(r'$k_0$',fontsize=30)
+plt.ylabel(r'$k_0$',fontsize=40)
 
-plt.legend(fontsize=30,loc="best")
+#plt.legend(fontsize=30,loc="best")
 
-plt.xticks(fontsize=40)
-plt.yticks(fontsize=40)
+plt.xticks(fontsize=25)
+plt.yticks(fontsize=25)
 
 
 
@@ -1085,27 +1115,28 @@ plt.xlim(0.0,2.1)
 
 plt.tight_layout()
 
+plt.savefig('k0_vs_lambda'+str(10)+'.pdf',dpi=1200)
 
 
 # ??? TAU = 1.0 
 
 fig3=plt.figure(figsize=(14,8))
 
-plt.plot(lmbs,k0(lmbs,1.0)/((np.sqrt(1+1)/1)*np.ones(len(lmbs))),color="k")
+plt.plot(lmbs,k0(lmbs,1.0),color="k",linewidth=2.0)
 
-plt.errorbar(lmb_array,k0_medias_1/((np.sqrt(1+1)/1)*np.ones(len(lmb_array))), yerr=k0_error_medias_1/((np.sqrt(1+1)/1)*np.ones(len(lmb_array))),mfc="none",capsize=10,ms=12, color='r',marker="s",linestyle="",label= r" $\tau_{sim} =  1.0$ "    ) 
+plt.errorbar(lmb_array,k0_medias_1, yerr=k0_error_medias_1/((np.sqrt(1+1)/1)*np.ones(len(lmb_array))),mfc="none",capsize=10,ms=12, color='r',marker="s",linestyle="",label= r" $\tau_{sim} =  1.0$ "    ) 
 # plt.plot(lmbs,(np.sqrt(1+1)/1)*np.ones(len(lmbs)),color="k",linestyle ="--")
 
 
 
-plt.xlabel(r'$\lambda$',fontsize=30)
+plt.xlabel(r'$\lambda$',fontsize=40)
 
-plt.ylabel(r'$k_0$',fontsize=30)
+plt.ylabel(r'$k_0$',fontsize=40)
 
-plt.legend(fontsize=30,loc="best")
+#plt.legend(fontsize=30,loc="best")
 
-plt.xticks(fontsize=40)
-plt.yticks(fontsize=40)
+plt.xticks(fontsize=25)
+plt.yticks(fontsize=25)
 
 
 
@@ -1113,6 +1144,113 @@ plt.xlim(0.0,2.1)
 
 
 plt.tight_layout()
+
+plt.savefig('k0_vs_lambda'+str(1)+'.pdf',dpi=1200)
+
+
+
+
+
+
+fig3,ax1=plt.subplots(figsize=(14,8))
+
+
+ax1.plot(lmbs,k0(lmbs,1.0),color="k",linewidth=2.0)
+ax1.errorbar(lmb_array,k0_medias_1, yerr=k0_error_medias_1,mfc="none",capsize=10,ms=12, color='r',marker="s",linestyle="",label= r" $\tau_{sim} =  1.0$ "    ) 
+
+
+
+
+ax1.set_ylabel(r'$k_0$',fontsize=40)
+
+ax1.set_xlabel( r'$\lambda$', fontsize=40)
+
+
+
+
+ax1.tick_params(axis='x', labelsize=25)
+ax1.tick_params(axis='y', labelsize=25)
+
+
+
+
+ax1.set_xlim(0.00,max(lmbs)+0.1)
+ax1.set_ylim(0.00,k0(2.0,1.0))
+
+
+
+
+ax2 = plt.axes([0,0,1,1])
+
+
+#? Manually set the position and relative size of the inset axes within ax1
+
+#               ?   [positionx,positiony,sizex,sizey]
+ip = InsetPosition(ax1, [0.1,0.5,0.45,0.45])
+
+
+ax2.set_axes_locator(ip)
+
+
+
+
+
+ax2.plot(lmbs,k0(lmbs,1.0),color="k",linewidth=2.0)
+ax2.errorbar(lmb_array,k0_medias_1, yerr=k0_error_medias_1,mfc="none",capsize=10,ms=12, color='r',marker="s",linestyle="",label= r" $\tau_{sim} =  1.0$ "    ) 
+
+
+
+
+
+
+ax2.tick_params(axis='x', labelsize=25)
+ax2.tick_params(axis='y', labelsize=25)
+# Some ad hoc tweaks.
+
+ax2.set_xlim(0.0,1.05)
+ax2.set_ylim(1.0,2.0)
+
+
+plt.tight_layout()
+
+plt.savefig('k0_vs_lambda'+str(1)+'_con_ventana.pdf',dpi=1200)
+
+
+
+
+
+
+
+
+
+
+fig3=plt.figure(figsize=(14,8))
+
+plt.plot(lmbs,(k0(lmbs,1.0))**(-1),color="k",linewidth=2.0)
+
+plt.errorbar(lmb_array,1./np.array(k0_medias_1), yerr=(1./np.array(k0_medias_1))*np.array(k0_error_medias_1),mfc="none",capsize=10,ms=12, color='r',marker="s",linestyle="",label= r" $\tau_{sim} =  1.0$ "    ) 
+# plt.plot(lmbs,(np.sqrt(1+1)/1)*np.ones(len(lmbs)),color="k",linestyle ="--")
+
+
+
+plt.xlabel(r'$\lambda$',fontsize=40)
+
+plt.ylabel(r'$L_s$',fontsize=40)
+
+#plt.legend(fontsize=30,loc="best")
+
+plt.xticks(fontsize=25)
+plt.yticks(fontsize=25)
+
+
+
+plt.xlim(0.0,2.1)
+
+
+plt.tight_layout()
+
+plt.savefig('Ls_vs_lambda'+str(1)+'.pdf',dpi=1200)
+
 
 
 plt.show()
