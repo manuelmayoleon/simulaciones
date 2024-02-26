@@ -9,8 +9,9 @@ matplotlib.rcParams['text.usetex'] = True
 from matplotlib.transforms import (
     Bbox, TransformedBbox, blended_transform_factory)
 import random
-from mpl_toolkits.axes_grid.inset_locator import (inset_axes, InsetPosition,
-                                                  mark_inset)
+import importlib
+from mpl_toolkits.axes_grid1.inset_locator import (inset_axes, InsetPosition,
+                                                   mark_inset)
 # import scipy.special as special
 
 # Import math Library
@@ -25,7 +26,7 @@ import glob
 from matplotlib.ticker import FormatStrFormatter
 
 from scipy.optimize import curve_fit
-
+import sklearn 
 from sklearn.linear_model import LinearRegression
 from sklearn.metrics import mean_absolute_error
 
